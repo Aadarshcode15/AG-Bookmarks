@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AG Bookmarks - Personal Bookmark Manager</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            color: #4A9EFF;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .bookmark-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .subtitle {
+            color: #b0b0b0;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+
+        .add-bookmark-section {
+            background: #2a2a2a;
+            border: 2px dashed #4A9EFF;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .input-field {
+            flex: 1;
+            min-width: 250px;
+            padding: 12px 15px;
+            background: #3a3a3a;
+            border: 1px solid #555;
+            border-radius: 8px;
+            color: #e0e0e0;
+            font-size: 14px;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #4A9EFF;
+            box-shadow: 0 0 0 2px rgba(74, 158, 255, 0.2);
+        }
+
+        .icon-selection {
+            margin-bottom: 20px;
+        }
+
+        .icon-selector-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            justify-content: center;
+        }
+
+        .selected-icon-display {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, #4A9EFF, #6BCF7F);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .selected-icon-display:hover {
+            transform: scale(1.1);
+        }
+
+        .icon-picker-btn {
+            padding: 8px 16px;
+            background: #4A9EFF;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .icon-picker-btn:hover {
+            background: #3A8EEF;
+        }
+
+        .icon-picker-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .icon-picker-content {
+            background: #2a2a2a;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid #555;
+        }
+
+        .icon-picker-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .icon-picker-title {
+            font-size: 1.5rem;
+            color: #4A9EFF;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: #444;
+            color: #e0e0e0;
+        }
+
+        .icon-categories {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .category-tab {
+            padding: 8px 16px;
+            background: #3a3a3a;
+            border: 1px solid #555;
+            border-radius: 20px;
+            color: #e0e0e0;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .category-tab.active {
+            background: #4A9EFF;
+            border-color: #4A9EFF;
+        }
+
+        .icons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .icon-option {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #3a3a3a;
+            border: 1px solid #555;
+            border-radius: 8px;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .icon-option:hover {
+            background: #4A9EFF;
+            border-color: #4A9EFF;
+            transform: scale(1.1);
+        }
+
+        .icon-option.selected {
+            background: #6BCF7F;
+            border-color: #6BCF7F;
+        }
+
+        .custom-icon-upload {
+            margin-top: 20px;
+            padding: 20px;
+            background: #333;
+            border: 1px dashed #555;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .upload-btn {
+            padding: 10px 20px;
+            background: #6BCF7F;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-btn:hover {
+            background: #5BBF6F;
+        }
+
+        .add-btn {
+            padding: 12px 30px;
+            background: linear-gradient(45deg, #4A9EFF, #6BCF7F);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(74, 158, 255, 0.3);
+        }
+
+        .bookmarks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        /* RGB Animated Border - ONLY on hover now */
+        @keyframes rgbBorder {
+            0% {
+                border-color: #FF0000;
+            }
+
+            16.66% {
+                border-color: #FF8000;
+            }
+
+            33.33% {
+                border-color: #FFFF00;
+            }
+
+            50% {
+                border-color: #00FF00;
+            }
+
+            66.66% {
+                border-color: #00FFFF;
+            }
+
+            83.33% {
+                border-color: #8000FF;
+            }
+
+            100% {
+                border-color: #FF0000;
+            }
+        }
+
+        .bookmark-card {
+            background: #2a2a2a;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid #ffffff;
+            /* Static border - no animation */
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bookmark-card:hover {
+            transform: translateY(-5px);
+            animation: rgbBorder 1.5s infinite linear;
+            /* RGB animation ONLY on hover */
+            border-width: 3px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .bookmark-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            margin: 0 auto 15px;
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+            overflow: hidden;
+        }
+
+        .bookmark-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+
+        .bookmark-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #e0e0e0;
+        }
+
+        .bookmark-url {
+            font-size: 12px;
+            color: #888;
+            word-break: break-all;
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 25px;
+            height: 25px;
+            background: rgba(255, 107, 107, 0.8);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .bookmark-card:hover .delete-btn {
+            opacity: 1;
+        }
+
+        .delete-btn:hover {
+            background: #FF6B6B;
+            transform: scale(1.1);
+        }
+
+        .search-bar {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .search-input {
+            width: 100%;
+            max-width: 400px;
+            padding: 15px 20px;
+            background: #2a2a2a;
+            border: 1px solid #555;
+            border-radius: 25px;
+            color: #e0e0e0;
+            font-size: 16px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #4A9EFF;
+            box-shadow: 0 0 0 2px rgba(74, 158, 255, 0.2);
+        }
+
+        .category-filter {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .category-btn {
+            padding: 8px 16px;
+            background: #3a3a3a;
+            border: 1px solid #555;
+            border-radius: 20px;
+            color: #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .category-btn.active,
+        .category-btn:hover {
+            background: #4A9EFF;
+            border-color: #4A9EFF;
+        }
+
+        .stats {
+            background: #2a2a2a;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4A9EFF;
+        }
+
+        .stat-label {
+            color: #888;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .input-group {
+                flex-direction: column;
+            }
+
+            .bookmarks-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 15px;
+            }
+
+            .add-bookmark-section {
+                padding: 20px;
+            }
+
+            .icon-picker-content {
+                margin: 20px;
+                max-height: 70vh;
+            }
+
+            .icons-grid {
+                grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+            }
+
+            .icon-option {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
+
+            /* Hover animation on mobile */
+            .bookmark-card:hover {
+                animation-duration: 2s;
+            }
+        }
+
+        /* Reduce motion for users who prefer it */
+        @media (prefers-reduced-motion: reduce) {
+            .bookmark-card {
+                border: 2px solid #4A9EFF;
+            }
+
+            .bookmark-card:hover {
+                animation: none;
+                border-color: #6BCF7F;
+                box-shadow: 0 5px 15px rgba(74, 158, 255, 0.3);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>
+                <div class="bookmark-icon">🔖</div>
+                AG Bookmarks
+            </h1>
+            <p class="subtitle">Your personal bookmark manager with visual previews</p>
+        </div>
+
+        <div class="search-bar">
+            <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search bookmarks..."
+                oninput="filterBookmarks()">
+        </div>
+
+        <div class="category-filter" id="categoryFilter">
+            <button class="category-btn active" onclick="filterByCategory('all')">All</button>
+            <button class="category-btn" onclick="filterByCategory('social')">Social</button>
+            <button class="category-btn" onclick="filterByCategory('development')">Development</button>
+            <button class="category-btn" onclick="filterByCategory('learning')">Learning</button>
+        </div>
+
+        <div class="bookmarks-grid" id="bookmarksGrid">
+            <!-- Bookmarks will be loaded here -->
+        </div>
+
+        <div class="stats">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalBookmarks">4</div>
+                    <div class="stat-label">Total Bookmarks</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="categoriesCount">2</div>
+                    <div class="stat-label">Categories</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="visitedToday">0</div>
+                    <div class="stat-label">Visited Today</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="add-bookmark-section">
+            <h3 style="margin-bottom: 20px; color: #4A9EFF;">Add New Bookmark</h3>
+
+            <div class="icon-selection">
+                <div class="icon-selector-header">
+                    <div class="selected-icon-display" id="selectedIconDisplay" onclick="openIconPicker()">🌐</div>
+                    <button class="icon-picker-btn" onclick="openIconPicker()">Choose Icon</button>
+                    <span style="color: #888; font-size: 14px;">Click to select a custom icon</span>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <input type="text" id="bookmarkTitle" class="input-field" placeholder="Bookmark Title" required>
+                <input type="url" id="bookmarkUrl" class="input-field" placeholder="https://example.com" required>
+                <input type="text" id="bookmarkCategory" class="input-field" placeholder="Category (optional)">
+                <input type="url" id="bookmarkImage" class="input-field" placeholder="Image URL (optional)">
+            </div>
+            <button class="add-btn" onclick="addBookmark()">Add Bookmark</button>
+        </div>
+
+    </div>
+
+    <!-- Icon Picker Modal -->
+    <div class="icon-picker-modal" id="iconPickerModal">
+        <div class="icon-picker-content">
+            <div class="icon-picker-header">
+                <h3 class="icon-picker-title">Choose an Icon</h3>
+                <button class="close-btn" onclick="closeIconPicker()">&times;</button>
+            </div>
+
+            <div class="icon-categories">
+                <button class="category-tab active" onclick="showIconCategory('general')">General</button>
+                <button class="category-tab" onclick="showIconCategory('social')">Social</button>
+                <button class="category-tab" onclick="showIconCategory('tech')">Tech</button>
+                <button class="category-tab" onclick="showIconCategory('business')">Business</button>
+                <button class="category-tab" onclick="showIconCategory('entertainment')">Entertainment</button>
+                <button class="category-tab" onclick="showIconCategory('education')">Education</button>
+            </div>
+
+            <div class="icons-grid" id="iconsGrid">
+                <!-- Icons will be populated here -->
+            </div>
+
+            <div class="custom-icon-upload">
+                <h4 style="color: #4A9EFF; margin-bottom: 10px;">Upload Custom Icon</h4>
+                <p style="color: #888; margin-bottom: 15px; font-size: 14px;">Upload your own icon (PNG, JPG, SVG)</p>
+                <input type="file" id="customIconFile" class="file-input" accept="image/*"
+                    onchange="handleCustomIconUpload(event)">
+                <button class="upload-btn" onclick="document.getElementById('customIconFile').click()">Choose
+                    File</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let bookmarks = [
+            {
+                id: 1,
+                title: "YouTube",
+                url: "https://youtube.com",
+                category: "social",
+                image: "",
+                icon: "📺",
+                customIcon: false
+            },
+            {
+                id: 2,
+                title: "GitHub",
+                url: "https://github.com",
+                category: "development",
+                image: "",
+                icon: "🐱",
+                customIcon: false
+            },
+            {
+                id: 3,
+                title: "Twitter",
+                url: "https://twitter.com",
+                category: "social",
+                image: "",
+                icon: "🐦",
+                customIcon: false
+            },
+            {
+                id: 4,
+                title: "Udemy",
+                url: "https://udemy.com",
+                category: "learning",
+                image: "",
+                icon: "📚",
+                customIcon: false
+            }
+        ];
+
+        const iconCategories = {
+            general: ['🌐', '📱', '💻', '🎯', '🔥', '⭐', '🚀', '💡', '🎨', '📊', '🏠', '🔗', '📎', '🗂️', '📁', '💾', '🗃️', '📋'],
+            social: ['📺', '📸', '💬', '📞', '✉️', '📧', '🐦', '👥', '💭', '🗨️', '💌', '📱', '📢', '🔊', '📻', '📡'],
+            tech: ['💻', '🖥️', '⌨️', '🖱️', '💾', '🔌', '🔋', '📟', '📠', '📺', '📡', '🛰️', '⚙️', '🔧', '🔨', '🛠️', '🐱', '⚡'],
+            business: ['💼', '📊', '📈', '📉', '💰', '💳', '💴', '💵', '🏦', '🏢', '📋', '📝', '📑', '🗂️', '📁', '💻', '📞', '✉️'],
+            entertainment: ['🎮', '🎵', '🎶', '🎤', '🎧', '📽️', '🎬', '📺', '🎭', '🎨', '🎯', '🎲', '♠️', '♥️', '♦️', '♣️', '🎪', '🎨'],
+            education: ['📚', '📖', '📝', '✏️', '🖊️', '📐', '📏', '🧮', '🎓', '🏫', '📊', '🔬', '🧪', '🌍', '🗺️', '📍', '🎯', '💡']
+        };
+
+        let selectedIcon = '🌐';
+        let visitedToday = 0;
+        let customIcons = {};
+
+        function saveBookmarks() {
+            localStorage.setItem('agBookmarks', JSON.stringify(bookmarks));
+            localStorage.setItem('customIcons', JSON.stringify(customIcons));
+            localStorage.setItem('visitedToday', visitedToday.toString());
+        }
+
+        function loadBookmarks() {
+            const saved = localStorage.getItem('agBookmarks');
+            const savedCustomIcons = localStorage.getItem('customIcons');
+            const savedVisits = localStorage.getItem('visitedToday');
+
+            if (saved) {
+                bookmarks = JSON.parse(saved);
+            }
+            if (savedCustomIcons) {
+                customIcons = JSON.parse(savedCustomIcons);
+            }
+            if (savedVisits) {
+                visitedToday = parseInt(savedVisits);
+            }
+
+            renderBookmarks();
+            updateStats();
+        }
+
+        function openIconPicker() {
+            document.getElementById('iconPickerModal').style.display = 'flex';
+            showIconCategory('general');
+        }
+
+        function closeIconPicker() {
+            document.getElementById('iconPickerModal').style.display = 'none';
+        }
+
+        function showIconCategory(category) {
+            // Update active tab
+            document.querySelectorAll('.category-tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Populate icons grid
+            const iconsGrid = document.getElementById('iconsGrid');
+            iconsGrid.innerHTML = '';
+
+            iconCategories[category].forEach(icon => {
+                const iconElement = document.createElement('div');
+                iconElement.className = 'icon-option';
+                iconElement.textContent = icon;
+                iconElement.onclick = () => selectIcon(icon, false);
+
+                if (icon === selectedIcon) {
+                    iconElement.classList.add('selected');
+                }
+
+                iconsGrid.appendChild(iconElement);
+            });
+        }
+
+        function selectIcon(icon, isCustom = false) {
+            selectedIcon = icon;
+            document.getElementById('selectedIconDisplay').innerHTML = isCustom ?
+                `<img src="${icon}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">` :
+                icon;
+
+            // Update selected state
+            document.querySelectorAll('.icon-option').forEach(opt => opt.classList.remove('selected'));
+            if (!isCustom) {
+                event.target.classList.add('selected');
+            }
+        }
+
+        function handleCustomIconUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const iconId = 'custom_' + Date.now();
+                const iconData = e.target.result;
+
+                customIcons[iconId] = iconData;
+                selectIcon(iconData, true);
+
+                // Add to icons grid
+                const iconElement = document.createElement('div');
+                iconElement.className = 'icon-option selected';
+                iconElement.innerHTML = `<img src="${iconData}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">`;
+                iconElement.onclick = () => selectIcon(iconData, true);
+
+                document.getElementById('iconsGrid').appendChild(iconElement);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function addBookmark() {
+            const title = document.getElementById('bookmarkTitle').value;
+            const url = document.getElementById('bookmarkUrl').value;
+            const category = document.getElementById('bookmarkCategory').value || 'general';
+            const image = document.getElementById('bookmarkImage').value;
+
+            if (!title || !url) {
+                alert('Please fill in the title and URL fields');
+                return;
+            }
+
+            const isCustomIcon = selectedIcon.startsWith('data:');
+            const newBookmark = {
+                id: Date.now(),
+                title: title,
+                url: url,
+                category: category.toLowerCase(),
+                image: image,
+                icon: selectedIcon,
+                customIcon: isCustomIcon
+            };
+
+            bookmarks.push(newBookmark);
+            saveBookmarks();
+            renderBookmarks();
+            updateStats();
+            updateCategoryFilter();
+
+            // Clear form
+            document.getElementById('bookmarkTitle').value = '';
+            document.getElementById('bookmarkUrl').value = '';
+            document.getElementById('bookmarkCategory').value = '';
+            document.getElementById('bookmarkImage').value = '';
+
+            // Reset icon selector
+            selectedIcon = '🌐';
+            document.getElementById('selectedIconDisplay').textContent = '🌐';
+        }
+
+        function deleteBookmark(id) {
+            if (confirm('Are you sure you want to delete this bookmark?')) {
+                bookmarks = bookmarks.filter(bookmark => bookmark.id !== id);
+                saveBookmarks();
+                renderBookmarks();
+                updateStats();
+            }
+        }
+
+        function openBookmark(url) {
+            visitedToday++;
+            saveBookmarks();
+            updateStats();
+            window.open(url, '_blank');
+        }
+
+        function renderBookmarks(filteredBookmarks = bookmarks) {
+            const grid = document.getElementById('bookmarksGrid');
+            grid.innerHTML = '';
+
+            filteredBookmarks.forEach(bookmark => {
+                const card = document.createElement('div');
+                card.className = 'bookmark-card';
+                card.onclick = () => openBookmark(bookmark.url);
+
+                let imageContent;
+                if (bookmark.image) {
+                    imageContent = `<img src="${bookmark.image}" alt="${bookmark.title}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                   <div style="display: none; width: 100%; height: 100%; align-items: center; justify-content: center; font-size: 32px;">${bookmark.customIcon ? `<img src="${bookmark.icon}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">` : bookmark.icon}</div>`;
+                } else if (bookmark.customIcon) {
+                    imageContent = `<img src="${bookmark.icon}" alt="${bookmark.title}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">`;
+                } else {
+                    imageContent = bookmark.icon;
+                }
+
+                card.innerHTML = `
+                    <button class="delete-btn" onclick="event.stopPropagation(); deleteBookmark(${bookmark.id})" title="Delete bookmark">×</button>
+                    <div class="bookmark-image">${imageContent}</div>
+                    <div class="bookmark-title">${bookmark.title}</div>
+                    <div class="bookmark-url">${bookmark.url}</div>
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+
+        function filterBookmarks() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = bookmarks.filter(bookmark =>
+                bookmark.title.toLowerCase().includes(searchTerm) ||
+                bookmark.url.toLowerCase().includes(searchTerm) ||
+                bookmark.category.toLowerCase().includes(searchTerm)
+            );
+            renderBookmarks(filtered);
+        }
+
+        function filterByCategory(category) {
+            // Update active button
+            document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            const filtered = category === 'all' ? bookmarks : bookmarks.filter(bookmark => bookmark.category === category);
+            renderBookmarks(filtered);
+        }
+
+        function updateStats() {
+            document.getElementById('totalBookmarks').textContent = bookmarks.length;
+            document.getElementById('categoriesCount').textContent = [...new Set(bookmarks.map(b => b.category))].length;
+            document.getElementById('visitedToday').textContent = visitedToday;
+        }
+
+        function updateCategoryFilter() {
+            const categories = [...new Set(bookmarks.map(b => b.category))];
+            const filter = document.getElementById('categoryFilter');
+
+            // Keep the "All" button and add new categories
+            const existingCategories = Array.from(filter.children).slice(1).map(btn => btn.textContent.toLowerCase());
+
+            categories.forEach(category => {
+                if (!existingCategories.includes(category)) {
+                    const btn = document.createElement('button');
+                    btn.className = 'category-btn';
+                    btn.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+                    btn.onclick = () => filterByCategory(category);
+                    filter.appendChild(btn);
+                }
+            });
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('iconPickerModal').onclick = function (event) {
+            if (event.target === this) {
+                closeIconPicker();
+            }
+        };
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            loadBookmarks();
+            updateCategoryFilter();
+        });
+    </script>
+</body>
+
+</html>
