@@ -578,6 +578,7 @@
             </div>
         </div>
 
+
         <div class="add-bookmark-section">
             <h3 style="margin-bottom: 20px; color: #4A9EFF;">Add New Bookmark</h3>
 
@@ -596,6 +597,14 @@
                 <input type="url" id="bookmarkImage" class="input-field" placeholder="Image URL (optional)">
             </div>
             <button class="add-btn" onclick="addBookmark()">Add Bookmark</button>
+        </div>
+
+        <div style="text-align:center; margin-bottom:30px;">
+            <button class="add-btn" onclick="exportBookmarks()" style="margin-right:10px;">Export Bookmarks</button>
+            <input type="file" id="importBookmarksFile" style="display:none;" accept="application/json"
+                onchange="importBookmarks(event)">
+            <button class="add-btn" onclick="document.getElementById('importBookmarksFile').click()">Import
+                Bookmarks</button>
         </div>
 
     </div>
@@ -918,6 +927,51 @@
             loadBookmarks();
             updateCategoryFilter();
         });
+        // Export bookmarks as JSON file
+        function exportBookmarks() {
+            const data = {
+                bookmarks,
+                customIcons,
+                visitedToday
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'ag_bookmarks_backup.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Import bookmarks from JSON file
+        function importBookmarks(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data.bookmarks && Array.isArray(data.bookmarks)) {
+                        bookmarks = data.bookmarks;
+                    }
+                    if (data.customIcons && typeof data.customIcons === 'object') {
+                        customIcons = data.customIcons;
+                    }
+                    if (typeof data.visitedToday === 'number') {
+                        visitedToday = data.visitedToday;
+                    }
+                    saveBookmarks();
+                    loadBookmarks();
+                    updateCategoryFilter();
+                    alert('Bookmarks imported successfully!');
+                } catch (err) {
+                    alert('Failed to import bookmarks: Invalid file format.');
+                }
+            };
+            reader.readAsText(file);
+        }
     </script>
 </body>
 
