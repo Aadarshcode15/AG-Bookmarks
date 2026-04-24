@@ -37,7 +37,12 @@
         /* ─── BODY & AURORA BACKGROUND ─── */
         body {
             font-family: 'Outfit', sans-serif;
-            background: #080812;
+            background-color: #080812; /* fallback */
+            background-image: url("background.png");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
             color: var(--text-primary);
             min-height: 100vh;
             overflow-x: hidden;
@@ -46,6 +51,7 @@
 
         /* Aurora orbs */
         .aurora {
+            display: none;
             position: fixed;
             inset: 0;
             pointer-events: none;
@@ -73,7 +79,7 @@
 
         /* Grid overlay */
         body::before {
-            content: '';
+            content: none;
             position: fixed;
             inset: 0;
             background-image:
