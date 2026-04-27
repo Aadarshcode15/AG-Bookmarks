@@ -7,1121 +7,274 @@
     <title>AG Bookmarks — Premium Bookmark Manager</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="icon" type="image/x-icon" href="logo.png">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
-        /* ─── CSS VARIABLES ─── */
         :root {
-            /*--rgb1: #ff2d78;*/
             --rgb1: #006dfb;
             --rgb2: #7c3aed;
             --rgb3: #06b6d4;
             --rgb4: #10b981;
-            --glass-bg: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.12);
-            --glass-shadow: rgba(0, 0, 0, 0.4);
+            --glass-bg: rgba(255,255,255,0.05);
+            --glass-border: rgba(255,255,255,0.12);
             --text-primary: #f0f0ff;
-            --text-secondary: rgba(240, 240, 255, 0.5);
+            --text-secondary: rgba(240,240,255,0.5);
             --accent: #818cf8;
-            --accent-glow: rgba(129, 140, 248, 0.4);
+            --accent-glow: rgba(129,140,248,0.4);
             --card-radius: 20px;
-            --transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
         }
 
-        /* ─── RESET ─── */
-        *,
-        *::before,
-        *::after {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
-        /* ─── SCROLLBAR ─── */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
+        ::-webkit-scrollbar { width:6px; }
+        ::-webkit-scrollbar-track { background:transparent; }
+        ::-webkit-scrollbar-thumb { background:rgba(129,140,248,0.4); border-radius:99px; }
 
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: rgba(129, 140, 248, 0.4);
-            border-radius: 99px;
-        }
-
-        /* ─── BODY & AURORA BACKGROUND ─── */
         body {
-            font-family: 'Outfit', sans-serif;
-            background-color: #080812;
-            /* fallback */
-            background-image: url("background.png");
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            color: var(--text-primary);
-            min-height: 100vh;
-            overflow-x: hidden;
-            padding: 0 0 20px;
+            font-family:'Outfit',sans-serif;
+            background-color:#080812;
+            background-image:url("background.png");
+            background-size:cover; background-position:center;
+            background-repeat:no-repeat; background-attachment:fixed;
+            color:var(--text-primary); min-height:100vh;
+            overflow-x:hidden; padding:0 0 20px;
         }
 
-        /* Aurora orbs */
-        .aurora {
-            display: none;
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: 0;
-            overflow: hidden;
-        }
+        .aurora { display:none; }
 
-        .orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(100px);
-            opacity: 0.18;
-            animation: drift linear infinite;
-        }
+        body::before { content:none; }
 
-        .orb-1 {
-            width: 700px;
-            height: 700px;
-            background: var(--rgb2);
-            top: -200px;
-            left: -200px;
-            animation-duration: 20s;
-        }
+        .container { max-width:1240px; margin:0 auto; padding:0 24px; position:relative; z-index:1; }
 
-        .orb-2 {
-            width: 500px;
-            height: 500px;
-            background: var(--rgb1);
-            top: 40%;
-            right: -150px;
-            animation-duration: 26s;
-            animation-direction: reverse;
-        }
+        /* ── HEADER ── */
+        .header { padding:60px 0 40px; text-align:center; }
+        .logo-badge { display:inline-flex; align-items:center; gap:14px; background:var(--glass-bg); border:1px solid var(--glass-border); backdrop-filter:blur(20px); border-radius:99px; padding:10px 24px 10px 10px; margin-bottom:28px; animation:fadeDown 0.8s ease both; }
+        .logo-icon { width:44px; height:44px; background:linear-gradient(135deg,var(--rgb2),var(--rgb1)); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:22px; animation:pulse-glow 3s ease infinite; }
+        @keyframes pulse-glow { 0%,100%{box-shadow:0 0 20px rgba(124,58,237,.5)} 50%{box-shadow:0 0 40px rgba(124,58,237,.9),0 0 60px rgba(255,45,120,.3)} }
+        .logo-badge span { font-size:13px; font-weight:600; letter-spacing:2px; text-transform:uppercase; background:linear-gradient(90deg,var(--accent),#a5b4fc); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .header h1 { font-size:clamp(2.8rem,7vw,5rem); font-weight:800; line-height:1.05; letter-spacing:-2px; animation:fadeDown 0.8s 0.1s ease both; }
+        .header h1 .gradient-text { background:linear-gradient(135deg,#e0e7ff 0%,var(--accent) 40%,var(--rgb1) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+        .header .subtitle { margin-top:14px; font-size:1.05rem; color:var(--text-secondary); animation:fadeDown 0.8s 0.2s ease both; }
 
-        .orb-3 {
-            width: 600px;
-            height: 600px;
-            background: var(--rgb3);
-            bottom: -100px;
-            left: 30%;
-            animation-duration: 32s;
-        }
+        @keyframes fadeDown { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes fadeUp   { from{opacity:0;transform:translateY(24px)}  to{opacity:1;transform:translateY(0)} }
 
-        .orb-4 {
-            width: 350px;
-            height: 350px;
-            background: var(--rgb4);
-            top: 60%;
-            left: 5%;
-            animation-duration: 22s;
-            animation-direction: reverse;
-        }
+        /* ── STATS ── */
+        .stats-bar { display:flex; justify-content:center; gap:2px; margin-bottom:40px; animation:fadeUp 0.8s 0.3s ease both; }
+        .stat-pill { background:var(--glass-bg); border:1px solid var(--glass-border); backdrop-filter:blur(20px); padding:14px 28px; display:flex; align-items:center; transition:var(--transition); cursor:default; }
+        .stat-pill:first-child { border-radius:99px 0 0 99px; }
+        .stat-pill:last-child  { border-radius:0 99px 99px 0; }
+        .stat-pill:hover { background:rgba(129,140,248,.1); border-color:rgba(129,140,248,.4); transform:translateY(-2px); }
+        .stat-num { font-family:'Space Mono',monospace; font-size:1.5rem; font-weight:700; background:linear-gradient(135deg,var(--accent),var(--rgb1)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .stat-lbl { font-size:.75rem; color:var(--text-secondary); text-transform:uppercase; letter-spacing:1px; }
 
-        @keyframes drift {
-            0% {
-                transform: translate(0, 0) scale(1);
-            }
+        /* ── SEARCH ── */
+        .search-section { display:flex; flex-direction:column; align-items:center; gap:16px; margin-bottom:36px; animation:fadeUp 0.8s 0.35s ease both; }
+        .search-wrap { position:relative; width:100%; max-width:520px; }
+        .search-icon { position:absolute; left:18px; top:50%; transform:translateY(-50%); color:var(--text-secondary); font-size:16px; pointer-events:none; }
+        .search-input { width:100%; padding:14px 18px 14px 46px; background:var(--glass-bg); border:1px solid var(--glass-border); backdrop-filter:blur(20px); border-radius:14px; color:var(--text-primary); font-family:'Outfit',sans-serif; font-size:15px; transition:var(--transition); }
+        .search-input::placeholder { color:var(--text-secondary); }
+        .search-input:focus { outline:none; border-color:var(--accent); background:rgba(129,140,248,.08); box-shadow:0 0 0 3px var(--accent-glow),0 8px 32px rgba(0,0,0,.3); }
+        .category-filter { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; }
+        .cat-btn { padding:7px 18px; background:var(--glass-bg); border:1px solid var(--glass-border); backdrop-filter:blur(20px); border-radius:99px; color:var(--text-secondary); font-family:'Outfit',sans-serif; font-size:13px; font-weight:500; cursor:pointer; transition:var(--transition); }
+        .cat-btn:hover,.cat-btn.active { background:linear-gradient(135deg,rgba(129,140,248,.25),rgba(255,45,120,.15)); border-color:rgba(129,140,248,.5); color:var(--text-primary); transform:translateY(-1px); }
+        .cat-btn.active { background:linear-gradient(135deg,rgba(129,140,248,.35),rgba(124,58,237,.2)); border-color:var(--accent); color:#fff; }
 
-            33% {
-                transform: translate(60px, -40px) scale(1.08);
-            }
+        /* ── DRAG HINT ── */
+        .drag-hint { text-align:center; font-size:12px; color:var(--text-secondary); margin-bottom:14px; display:flex; align-items:center; justify-content:center; gap:6px; opacity:0; transition:opacity 0.4s; letter-spacing:.5px; }
+        .drag-hint.visible { opacity:1; }
+        .drag-hint-icon { font-size:15px; animation:nudge 2s ease infinite; }
+        @keyframes nudge { 0%,100%{transform:translateX(0)} 30%{transform:translateX(-5px)} 60%{transform:translateX(5px)} }
 
-            66% {
-                transform: translate(-40px, 60px) scale(0.95);
-            }
+        /* ── GRID ── */
+        .bookmarks-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:18px; margin-bottom:48px; animation:fadeUp 0.8s 0.4s ease both; }
 
-            100% {
-                transform: translate(0, 0) scale(1);
-            }
-        }
-
-        /* Grid overlay */
-        body::before {
-            content: none;
-            position: fixed;
-            inset: 0;
-            background-image:
-                linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
-            background-size: 50px 50px;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        /* ─── CONTAINER ─── */
-        .container {
-            max-width: 1240px;
-            margin: 0 auto;
-            padding: 0 24px;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* ─── HEADER ─── */
-        .header {
-            padding: 60px 0 40px;
-            text-align: center;
-        }
-
-        .logo-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 14px;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(20px);
-            border-radius: 99px;
-            padding: 10px 24px 10px 10px;
-            margin-bottom: 28px;
-            animation: fadeDown 0.8s ease both;
-        }
-
-        .logo-icon {
-            width: 44px;
-            height: 44px;
-            background: linear-gradient(135deg, var(--rgb2), var(--rgb1));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            box-shadow: 0 0 20px rgba(124, 58, 237, 0.5);
-            animation: pulse-glow 3s ease infinite;
-        }
-
-        @keyframes pulse-glow {
-
-            0%,
-            100% {
-                box-shadow: 0 0 20px rgba(124, 58, 237, 0.5);
-            }
-
-            50% {
-                box-shadow: 0 0 40px rgba(124, 58, 237, 0.9), 0 0 60px rgba(255, 45, 120, 0.3);
-            }
-        }
-
-        .logo-badge span {
-            font-size: 13px;
-            font-weight: 600;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            background: linear-gradient(90deg, var(--accent), #a5b4fc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .header h1 {
-            font-size: clamp(2.8rem, 7vw, 5rem);
-            font-weight: 800;
-            line-height: 1.05;
-            letter-spacing: -2px;
-            animation: fadeDown 0.8s 0.1s ease both;
-        }
-
-        .header h1 .gradient-text {
-            background: linear-gradient(135deg, #e0e7ff 0%, var(--accent) 40%, var(--rgb1) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .header .subtitle {
-            margin-top: 14px;
-            font-size: 1.05rem;
-            color: var(--text-secondary);
-            font-weight: 400;
-            letter-spacing: 0.3px;
-            animation: fadeDown 0.8s 0.2s ease both;
-        }
-
-        @keyframes fadeDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* ─── STATS BAR ─── */
-        .stats-bar {
-            display: flex;
-            justify-content: center;
-            gap: 2px;
-            margin-bottom: 40px;
-            animation: fadeUp 0.8s 0.3s ease both;
-        }
-
-        .stat-pill {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(20px);
-            padding: 14px 28px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: var(--transition);
-            cursor: default;
-        }
-
-        .stat-pill:first-child {
-            border-radius: 99px 0 0 99px;
-        }
-
-        .stat-pill:last-child {
-            border-radius: 0 99px 99px 0;
-        }
-
-        .stat-pill:hover {
-            background: rgba(129, 140, 248, 0.1);
-            border-color: rgba(129, 140, 248, 0.4);
-            transform: translateY(-2px);
-        }
-
-        .stat-num {
-            font-family: 'Space Mono', monospace;
-            font-size: 1.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--accent), var(--rgb1));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .stat-lbl {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* ─── SEARCH & FILTER ─── */
-        .search-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 36px;
-            animation: fadeUp 0.8s 0.35s ease both;
-        }
-
-        .search-wrap {
-            position: relative;
-            width: 100%;
-            max-width: 520px;
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 18px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-secondary);
-            font-size: 16px;
-            pointer-events: none;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 14px 18px 14px 46px;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(20px);
-            border-radius: 14px;
-            color: var(--text-primary);
-            font-family: 'Outfit', sans-serif;
-            font-size: 15px;
-            transition: var(--transition);
-        }
-
-        .search-input::placeholder {
-            color: var(--text-secondary);
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: var(--accent);
-            background: rgba(129, 140, 248, 0.08);
-            box-shadow: 0 0 0 3px var(--accent-glow), 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
-
-        .category-filter {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .cat-btn {
-            padding: 7px 18px;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(20px);
-            border-radius: 99px;
-            color: var(--text-secondary);
-            font-family: 'Outfit', sans-serif;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: var(--transition);
-            letter-spacing: 0.3px;
-        }
-
-        .cat-btn:hover,
-        .cat-btn.active {
-            background: linear-gradient(135deg, rgba(129, 140, 248, 0.25), rgba(255, 45, 120, 0.15));
-            border-color: rgba(129, 140, 248, 0.5);
-            color: var(--text-primary);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 16px rgba(129, 140, 248, 0.2);
-        }
-
-        .cat-btn.active {
-            background: linear-gradient(135deg, rgba(129, 140, 248, 0.35), rgba(124, 58, 237, 0.2));
-            border-color: var(--accent);
-            color: #fff;
-        }
-
-        /* ─── BOOKMARKS GRID ─── */
-        .bookmarks-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-            gap: 18px;
-            margin-bottom: 48px;
-            animation: fadeUp 0.8s 0.4s ease both;
-        }
-
-        @keyframes fadeUp {
-            from {
-                opacity: 0;
-                transform: translateY(24px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* ── Spinning angle for conic gradient ── */
-        @property --angle {
-            syntax: '<angle>';
-            initial-value: 0deg;
-            inherits: false;
-        }
-
-        @keyframes spin-angle {
-            to {
-                --angle: 360deg;
-            }
-        }
-
-        /*
-         * LAYER STACK (bottom → top):
-         *   0  card element itself       → transparent bg, no border
-         *   1  ::before                  → solid opaque fill + shimmer
-         *   2  ::after                   → RGB conic ring, inset:-2px, CLIPPED to card
-         *   3  card > * (content)        → always on top
-         *
-         * Why this works:
-         *  - ::after is INSIDE the stacking context (positive z-index),
-         *    so backdrop-filter cannot interfere with it.
-         *  - ::after uses a MASK so only a 2 px ring is visible;
-         *    the card fill (::before) shows through the masked centre.
-         */
+        /* RGB border */
+        @property --angle { syntax:'<angle>'; initial-value:0deg; inherits:false; }
+        @keyframes spin-angle { to { --angle:360deg; } }
 
         .bookmark-card {
-            position: relative;
-            background: transparent;
-            /* card itself is invisible */
-            border: none;
-            border-radius: var(--card-radius);
-            padding: 24px 16px 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: var(--transition);
-            overflow: hidden;
-            /* clips ::after to card shape */
-            animation: cardIn 0.5s ease both;
+            position:relative; background:transparent; border:none;
+            border-radius:var(--card-radius); padding:24px 16px 20px;
+            text-align:center; cursor:grab; transition:var(--transition);
+            overflow:hidden; animation:cardIn 0.5s ease both;
+            user-select:none; -webkit-user-select:none;
         }
+        .bookmark-card:active { cursor:grabbing; }
+        @keyframes cardIn { from{opacity:0;transform:scale(.92) translateY(16px)} to{opacity:1;transform:scale(1) translateY(0)} }
 
-        @keyframes cardIn {
-            from {
-                opacity: 0;
-                transform: scale(0.92) translateY(16px);
-            }
-
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
-
-        /* Layer 1 — solid glass fill + shimmer sweep */
+        /* Layer 1 — glass fill */
         .bookmark-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: inherit;
-            /* Opaque-enough dark glass */
-            background:
-                linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.055) 50%, transparent 60%),
-                rgba(14, 14, 26, 0.82);
-            background-size: 200% 200%, auto;
-            background-position: 200% 0, 0 0;
-            transition: background-position 0.6s ease;
-            /* Subtle static border so card is visible before hover */
-            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.10);
-            z-index: 1;
-            pointer-events: none;
+            content:''; position:absolute; inset:0; border-radius:inherit;
+            background: linear-gradient(105deg,transparent 40%,rgba(255,255,255,.055) 50%,transparent 60%), rgba(14,14,26,.82);
+            background-size:200% 200%,auto; background-position:200% 0,0 0;
+            transition:background-position .6s ease;
+            box-shadow:inset 0 0 0 1px rgba(255,255,255,.10);
+            z-index:1; pointer-events:none;
         }
 
-        /* Layer 2 — RGB border ring (masked to 2 px edge only) */
+        /* Layer 2 — RGB ring via mask */
         .bookmark-card::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            /* fills the card exactly */
-            border-radius: inherit;
-            background: conic-gradient(from var(--angle),
-                    #ff2d78, #ff6b35, #ffdd57,
-                    #00e5ff, #7c3aed, #ff2d78);
-            /* Mask: transparent ring 2 px wide at the edge, opaque centre → inverted:
-               paint only the outer 2 px, hide the rest */
-            -webkit-mask:
-                linear-gradient(#000 0 0) content-box,
-                linear-gradient(#000 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            padding: 2px;
-            /* ring thickness */
-            animation: spin-angle 2.5s linear infinite;
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            z-index: 2;
-            pointer-events: none;
+            content:''; position:absolute; inset:0; border-radius:inherit;
+            background:conic-gradient(from var(--angle),#ff2d78,#ff6b35,#ffdd57,#00e5ff,#7c3aed,#ff2d78);
+            -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+            -webkit-mask-composite:xor; mask-composite:exclude;
+            padding:2px; animation:spin-angle 2.5s linear infinite;
+            opacity:0; transition:opacity .4s ease; z-index:2; pointer-events:none;
         }
 
-        /* Layer 3 — actual content */
-        .bookmark-card>* {
-            position: relative;
-            z-index: 3;
-        }
+        /* Layer 3 — content */
+        .bookmark-card > * { position:relative; z-index:3; }
 
-        .bookmark-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.55);
-        }
-
-        .bookmark-card:hover::after {
-            opacity: 1;
-        }
-
+        .bookmark-card:hover { transform:translateY(-8px) scale(1.02); box-shadow:0 24px 48px rgba(0,0,0,.55); }
+        .bookmark-card:hover::after { opacity:1; }
         .bookmark-card:hover::before {
-            background-position: -200% 0, 0 0;
-            background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.055) 50%, transparent 60%),
-                rgba(18, 18, 34, 0.90);
-            background-size: 200% 200%, auto;
-            background-position: -200% 0, 0 0;
+            background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.055) 50%,transparent 60%),rgba(18,18,34,.90);
+            background-size:200% 200%,auto; background-position:-200% 0,0 0;
         }
 
+        /* Drag states */
+        .bookmark-card.dragging { opacity:.3; transform:scale(.94); cursor:grabbing; }
+        .bookmark-card.drag-over { transform:scale(1.05); }
+        .bookmark-card.drag-over::after { opacity:1; }
+
+        /* ── FAVICON badge on icon ── */
         .bookmark-icon-wrap {
-            width: 72px;
-            height: 72px;
-            margin: 0 auto 14px;
-            border-radius: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 34px;
-            position: relative;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: var(--transition);
-            overflow: hidden;
+            width:72px; height:72px; margin:0 auto 14px; border-radius:18px;
+            display:flex; align-items:center; justify-content:center; font-size:34px;
+            position:relative; background:rgba(255,255,255,.05);
+            border:1px solid rgba(255,255,255,.08); transition:var(--transition); overflow:visible;
         }
+        .bookmark-card:hover .bookmark-icon-wrap { transform:scale(1.1) rotate(-4deg); box-shadow:0 8px 24px rgba(0,0,0,.4); }
+        .bookmark-icon-wrap .icon-inner { width:100%; height:100%; border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:34px; overflow:hidden; }
+        .bookmark-icon-wrap .icon-inner img { width:100%; height:100%; object-fit:contain; border-radius:16px; }
 
-        .bookmark-card:hover .bookmark-icon-wrap {
-            transform: scale(1.1) rotate(-4deg);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        .favicon-badge {
+            position:absolute; bottom:-5px; right:-5px;
+            width:22px; height:22px; background:#12121e;
+            border:1px solid rgba(255,255,255,.15); border-radius:7px;
+            display:none; align-items:center; justify-content:center;
+            overflow:hidden; z-index:5;
         }
-
-        .bookmark-icon-wrap img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 18px;
-        }
-
-        .bookmark-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 4px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .bookmark-cat-tag {
-            display: inline-block;
-            padding: 2px 10px;
-            background: rgba(129, 140, 248, 0.12);
-            border: 1px solid rgba(129, 140, 248, 0.2);
-            border-radius: 99px;
-            font-size: 10px;
-            font-weight: 500;
-            color: #a5b4fc;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-
-        .delete-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 26px;
-            height: 26px;
-            background: rgba(255, 45, 120, 0.15);
-            border: 1px solid rgba(255, 45, 120, 0.3);
-            border-radius: 50%;
-            color: var(--rgb1);
-            cursor: pointer;
-            opacity: 0;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            z-index: 10;
-        }
-
-        .bookmark-card:hover .delete-btn {
-            opacity: 1;
-        }
-
-        .delete-btn:hover {
-            background: var(--rgb1);
-            color: white;
-            transform: scale(1.1) rotate(90deg);
-            box-shadow: 0 0 12px rgba(255, 45, 120, 0.5);
-        }
-
-        /* Empty state */
-        .empty-state {
-            grid-column: 1/-1;
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--text-secondary);
-        }
-
-        .empty-state .empty-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
-            opacity: 0.4;
-        }
-
-        .empty-state p {
-            font-size: 1rem;
-        }
-
-        /* ─── ADD SECTION ─── */
-        .add-section {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(24px);
-            border-radius: 24px;
-            padding: 36px;
-            margin-bottom: 24px;
-            animation: fadeUp 0.8s 0.5s ease both;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .add-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--accent), var(--rgb1), transparent);
-        }
-
-        .section-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            letter-spacing: -0.3px;
-            margin-bottom: 24px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .section-title span.dot {
-            width: 8px;
-            height: 8px;
-            background: linear-gradient(135deg, var(--accent), var(--rgb1));
-            border-radius: 50%;
-            display: inline-block;
-            box-shadow: 0 0 8px var(--accent);
-        }
-
-        /* Icon picker trigger */
-        .icon-selector-row {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            margin-bottom: 20px;
-        }
-
-        .selected-icon-display {
-            width: 52px;
-            height: 52px;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid var(--glass-border);
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 26px;
-            cursor: pointer;
-            transition: var(--transition);
-            overflow: hidden;
-        }
-
-        .selected-icon-display:hover {
-            border-color: var(--accent);
-            background: rgba(129, 140, 248, 0.1);
-            transform: scale(1.05);
-        }
-
-        .icon-pick-btn {
-            padding: 9px 18px;
-            background: rgba(129, 140, 248, 0.12);
-            border: 1px solid rgba(129, 140, 248, 0.3);
-            border-radius: 10px;
-            color: var(--accent);
-            font-family: 'Outfit', sans-serif;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .icon-pick-btn:hover {
-            background: rgba(129, 140, 248, 0.25);
-            box-shadow: 0 0 16px var(--accent-glow);
-        }
-
-        .icon-hint {
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-
-        .input-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 18px;
-        }
-
-        @media (max-width: 600px) {
-            .input-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .input-field {
-            width: 100%;
-            padding: 12px 16px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            color: var(--text-primary);
-            font-family: 'Outfit', sans-serif;
-            font-size: 14px;
-            transition: var(--transition);
-        }
-
-        .input-field::placeholder {
-            color: var(--text-secondary);
-        }
-
-        .input-field:focus {
-            outline: none;
-            border-color: var(--accent);
-            background: rgba(129, 140, 248, 0.06);
-            box-shadow: 0 0 0 3px var(--accent-glow);
-        }
-
-        .btn-row {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .btn-primary {
-            padding: 12px 28px;
-            background: linear-gradient(135deg, var(--rgb2), var(--rgb1));
-            border: none;
-            border-radius: 12px;
-            color: white;
-            font-family: 'Outfit', sans-serif;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: var(--transition);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-primary::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), transparent);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 32px rgba(124, 58, 237, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1);
-        }
-
-        .btn-primary:hover::after {
-            opacity: 1;
-        }
-
-        .btn-primary:active {
-            transform: translateY(0);
-        }
-
-        .btn-secondary {
-            padding: 12px 22px;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            color: var(--text-secondary);
-            font-family: 'Outfit', sans-serif;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .btn-secondary:hover {
-            border-color: rgba(255, 255, 255, 0.2);
-            color: var(--text-primary);
-            background: rgba(255, 255, 255, 0.07);
-        }
-
-        /* ─── ACTION ROW ─── */
-        .action-row {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin-bottom: 40px;
-            animation: fadeUp 0.8s 0.55s ease both;
-        }
-
-        /* ─── MODAL ─── */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(12px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            padding: 20px;
-        }
-
-        .modal-overlay.open {
-            display: flex;
-        }
-
-        .modal {
-            background: #0e0e1a;
-            border: 1px solid rgba(129, 140, 248, 0.3);
-            border-radius: 24px;
-            padding: 32px;
-            max-width: 580px;
-            width: 100%;
-            max-height: 82vh;
-            overflow-y: auto;
-            position: relative;
-            box-shadow: 0 32px 64px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.04);
-            animation: modalIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-        }
-
-        @keyframes modalIn {
-            from {
-                opacity: 0;
-                transform: scale(0.88) translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-
-        .modal-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            background: linear-gradient(90deg, var(--accent), #c4b5fd);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .close-btn {
-            width: 32px;
-            height: 32px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
-            border-radius: 50%;
-            color: var(--text-secondary);
-            font-size: 18px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition);
-        }
-
-        .close-btn:hover {
-            background: rgba(255, 45, 120, 0.15);
-            color: var(--rgb1);
-            border-color: var(--rgb1);
-            transform: rotate(90deg);
-        }
-
-        .icon-tabs {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-bottom: 18px;
-        }
-
-        .icon-tab {
-            padding: 6px 14px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--glass-border);
-            border-radius: 99px;
-            color: var(--text-secondary);
-            font-family: 'Outfit', sans-serif;
-            font-size: 12px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .icon-tab.active,
-        .icon-tab:hover {
-            background: rgba(129, 140, 248, 0.2);
-            border-color: var(--accent);
-            color: var(--text-primary);
-        }
-
-        .icons-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(46px, 1fr));
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-
-        .icon-opt {
-            width: 46px;
-            height: 46px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .icon-opt:hover {
-            background: rgba(129, 140, 248, 0.15);
-            border-color: var(--accent);
-            transform: scale(1.12);
-        }
-
-        .icon-opt.selected {
-            background: linear-gradient(135deg, rgba(129, 140, 248, 0.3), rgba(255, 45, 120, 0.2));
-            border-color: var(--accent);
-            box-shadow: 0 0 12px var(--accent-glow);
-        }
-
-        .upload-zone {
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px dashed rgba(129, 140, 248, 0.3);
-            border-radius: 14px;
-            text-align: center;
-        }
-
-        .upload-zone p {
-            color: var(--text-secondary);
-            font-size: 13px;
-            margin-bottom: 12px;
-        }
-
-        /* ─── TOAST ─── */
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: rgba(15, 15, 30, 0.95);
-            border: 1px solid rgba(129, 140, 248, 0.4);
-            backdrop-filter: blur(20px);
-            border-radius: 14px;
-            padding: 14px 20px;
-            color: var(--text-primary);
-            font-size: 14px;
-            font-weight: 500;
-            z-index: 9999;
-            transform: translateY(20px);
-            opacity: 0;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            max-width: 300px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-        }
-
-        .toast.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .toast .toast-icon {
-            font-size: 18px;
-        }
-
-        /* ─── RESPONSIVE ─── */
-        @media (max-width: 768px) {
-            .header {
-                padding: 40px 0 28px;
-            }
-
-            .add-section {
-                padding: 24px 20px;
-            }
-
-            .stats-bar {
-                flex-direction: row;
-                gap: 4px;
-            }
-
-            .stat-pill {
-                padding: 10px 16px;
-            }
-
-            .stat-num {
-                font-size: 1.1rem;
-            }
-
-            .modal {
-                padding: 24px 20px;
-            }
-
-            .bookmarks-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-                gap: 14px;
-            }
-        }
-
-        footer {
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .footer-content {
-            text-align: center;
-            color: #8892b0;
-        }
-
-        .footer-content p {
-            margin-bottom: 15px;
-        }
-
-        .brand-signature {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .ag-brand {
-            font-size: 1.5rem;
-            font-weight: 700;
-            background: linear-gradient(45deg, #c41c1c, #ee5a24, #ffa726, #42a5f5, #ab47bc);
-            background-size: 300% 300%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: gradient-shift 3s ease-in-out infinite;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        @keyframes gradient-shift {
-
-            0%,
-            100% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-        }
-
-        /* ─── MISC UTILS ─── */
-        input[type="file"] {
-            display: none;
+        .favicon-badge.show { display:flex; }
+        .favicon-badge img { width:14px; height:14px; object-fit:contain; }
+
+        .bookmark-title { font-size:14px; font-weight:600; color:var(--text-primary); margin-bottom:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .bookmark-cat-tag { display:inline-block; padding:2px 10px; background:rgba(129,140,248,.12); border:1px solid rgba(129,140,248,.2); border-radius:99px; font-size:10px; font-weight:500; color:#a5b4fc; letter-spacing:.5px; text-transform:uppercase; }
+
+        .delete-btn { position:absolute; top:10px; right:10px; width:26px; height:26px; background:rgba(255,45,120,.15); border:1px solid rgba(255,45,120,.3); border-radius:50%; color:var(--rgb1); cursor:pointer; opacity:0; transition:var(--transition); display:flex; align-items:center; justify-content:center; font-size:14px; z-index:10; }
+        .bookmark-card:hover .delete-btn { opacity:1; }
+        .delete-btn:hover { background:var(--rgb1); color:white; transform:scale(1.1) rotate(90deg); box-shadow:0 0 12px rgba(255,45,120,.5); }
+
+        .drag-handle { position:absolute; top:10px; left:10px; width:22px; height:22px; background:rgba(255,255,255,.06); border:1px solid var(--glass-border); border-radius:6px; cursor:grab; opacity:0; transition:var(--transition); display:flex; align-items:center; justify-content:center; font-size:12px; z-index:10; color:var(--text-secondary); }
+        .bookmark-card:hover .drag-handle { opacity:1; }
+        .drag-handle:hover { background:rgba(129,140,248,.2); border-color:var(--accent); color:var(--accent); }
+        .drag-handle:active { cursor:grabbing; }
+
+        .empty-state { grid-column:1/-1; text-align:center; padding:60px 20px; color:var(--text-secondary); }
+        .empty-state .empty-icon { font-size:48px; margin-bottom:16px; opacity:.4; }
+
+        /* ── ADD SECTION ── */
+        .add-section { background:var(--glass-bg); border:1px solid var(--glass-border); backdrop-filter:blur(24px); border-radius:24px; padding:36px; margin-bottom:24px; animation:fadeUp 0.8s 0.5s ease both; position:relative; overflow:hidden; }
+        .add-section::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,var(--accent),var(--rgb1),transparent); }
+        .section-title { font-size:1.1rem; font-weight:700; letter-spacing:-.3px; margin-bottom:24px; display:flex; align-items:center; gap:10px; }
+        .section-title span.dot { width:8px; height:8px; background:linear-gradient(135deg,var(--accent),var(--rgb1)); border-radius:50%; display:inline-block; box-shadow:0 0 8px var(--accent); }
+
+        .icon-selector-row { display:flex; align-items:center; gap:12px; margin-bottom:20px; flex-wrap:wrap; }
+        .selected-icon-display { width:52px; height:52px; background:rgba(255,255,255,.06); border:1px solid var(--glass-border); border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:26px; cursor:pointer; transition:var(--transition); overflow:hidden; flex-shrink:0; }
+        .selected-icon-display:hover { border-color:var(--accent); background:rgba(129,140,248,.1); transform:scale(1.05); }
+        .selected-icon-display.has-favicon { border-color:rgba(16,185,129,.6); box-shadow:0 0 12px rgba(16,185,129,.25); }
+
+        .icon-pick-btn { padding:9px 18px; background:rgba(129,140,248,.12); border:1px solid rgba(129,140,248,.3); border-radius:10px; color:var(--accent); font-family:'Outfit',sans-serif; font-size:13px; font-weight:600; cursor:pointer; transition:var(--transition); }
+        .icon-pick-btn:hover { background:rgba(129,140,248,.25); box-shadow:0 0 16px var(--accent-glow); }
+
+        /* Favicon auto badge */
+        .favicon-auto-badge { display:none; align-items:center; gap:6px; padding:5px 12px; border-radius:99px; background:rgba(16,185,129,.12); border:1px solid rgba(16,185,129,.3); font-size:11px; font-weight:600; color:#34d399; letter-spacing:.3px; }
+        .favicon-auto-badge.show { display:flex; }
+        .favicon-dot { width:6px; height:6px; background:#10b981; border-radius:50%; animation:blink 1.2s ease infinite; }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+        .icon-hint { font-size:12px; color:var(--text-secondary); }
+
+        .input-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:18px; }
+        @media(max-width:600px){.input-grid{grid-template-columns:1fr;}}
+
+        /* URL wrapper with favicon inline preview */
+        .url-wrap { position:relative; }
+        .url-wrap .input-field { padding-right:44px; }
+        .favicon-inline-preview { position:absolute; right:12px; top:50%; transform:translateY(-50%); width:24px; height:24px; border-radius:7px; background:rgba(255,255,255,.07); border:1px solid var(--glass-border); overflow:hidden; display:none; align-items:center; justify-content:center; }
+        .favicon-inline-preview.show { display:flex; }
+        .favicon-inline-preview img { width:16px; height:16px; object-fit:contain; }
+
+        .input-field { width:100%; padding:12px 16px; background:rgba(255,255,255,.04); border:1px solid var(--glass-border); border-radius:12px; color:var(--text-primary); font-family:'Outfit',sans-serif; font-size:14px; transition:var(--transition); }
+        .input-field::placeholder { color:var(--text-secondary); }
+        .input-field:focus { outline:none; border-color:var(--accent); background:rgba(129,140,248,.06); box-shadow:0 0 0 3px var(--accent-glow); }
+
+        .btn-row { display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+        .btn-primary { padding:12px 28px; background:linear-gradient(135deg,var(--rgb2),var(--rgb1)); border:none; border-radius:12px; color:white; font-family:'Outfit',sans-serif; font-size:14px; font-weight:700; cursor:pointer; transition:var(--transition); position:relative; overflow:hidden; }
+        .btn-primary::after { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(255,255,255,.15),transparent); opacity:0; transition:opacity .3s; }
+        .btn-primary:hover { transform:translateY(-2px); box-shadow:0 12px 32px rgba(124,58,237,.5); }
+        .btn-primary:hover::after { opacity:1; }
+        .btn-primary:active { transform:translateY(0); }
+
+        .btn-secondary { padding:12px 22px; background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:12px; color:var(--text-secondary); font-family:'Outfit',sans-serif; font-size:14px; font-weight:600; cursor:pointer; transition:var(--transition); }
+        .btn-secondary:hover { border-color:rgba(255,255,255,.2); color:var(--text-primary); background:rgba(255,255,255,.07); }
+
+        .action-row { display:flex; justify-content:center; gap:12px; margin-bottom:40px; animation:fadeUp 0.8s 0.55s ease both; }
+
+        /* ── MODAL ── */
+        .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.7); backdrop-filter:blur(12px); display:none; align-items:center; justify-content:center; z-index:1000; padding:20px; }
+        .modal-overlay.open { display:flex; }
+        .modal { background:#0e0e1a; border:1px solid rgba(129,140,248,.3); border-radius:24px; padding:32px; max-width:580px; width:100%; max-height:82vh; overflow-y:auto; box-shadow:0 32px 64px rgba(0,0,0,.6); animation:modalIn .3s cubic-bezier(.34,1.56,.64,1) both; }
+        @keyframes modalIn { from{opacity:0;transform:scale(.88) translateY(20px)} to{opacity:1;transform:scale(1) translateY(0)} }
+        .modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; }
+        .modal-title { font-size:1.3rem; font-weight:700; background:linear-gradient(90deg,var(--accent),#c4b5fd); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .close-btn { width:32px; height:32px; background:rgba(255,255,255,.05); border:1px solid var(--glass-border); border-radius:50%; color:var(--text-secondary); font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:var(--transition); }
+        .close-btn:hover { background:rgba(255,45,120,.15); color:var(--rgb1); border-color:var(--rgb1); transform:rotate(90deg); }
+        .icon-tabs { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px; }
+        .icon-tab { padding:6px 14px; background:rgba(255,255,255,.04); border:1px solid var(--glass-border); border-radius:99px; color:var(--text-secondary); font-family:'Outfit',sans-serif; font-size:12px; cursor:pointer; transition:var(--transition); }
+        .icon-tab.active,.icon-tab:hover { background:rgba(129,140,248,.2); border-color:var(--accent); color:var(--text-primary); }
+        .icons-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(46px,1fr)); gap:8px; margin-bottom:20px; }
+        .icon-opt { width:46px; height:46px; background:rgba(255,255,255,.04); border:1px solid var(--glass-border); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:22px; cursor:pointer; transition:var(--transition); }
+        .icon-opt:hover { background:rgba(129,140,248,.15); border-color:var(--accent); transform:scale(1.12); }
+        .icon-opt.selected { background:linear-gradient(135deg,rgba(129,140,248,.3),rgba(255,45,120,.2)); border-color:var(--accent); box-shadow:0 0 12px var(--accent-glow); }
+        .upload-zone { padding:20px; background:rgba(255,255,255,.03); border:1px dashed rgba(129,140,248,.3); border-radius:14px; text-align:center; }
+        .upload-zone p { color:var(--text-secondary); font-size:13px; margin-bottom:12px; }
+
+        /* ── TOAST ── */
+        .toast { position:fixed; bottom:30px; right:30px; background:rgba(15,15,30,.95); border:1px solid rgba(129,140,248,.4); backdrop-filter:blur(20px); border-radius:14px; padding:14px 20px; color:var(--text-primary); font-size:14px; font-weight:500; z-index:9999; transform:translateY(20px); opacity:0; transition:all .3s cubic-bezier(.4,0,.2,1); display:flex; align-items:center; gap:10px; max-width:300px; box-shadow:0 8px 32px rgba(0,0,0,.5); }
+        .toast.show { transform:translateY(0); opacity:1; }
+        .toast .toast-icon { font-size:18px; }
+
+        /* ── FOOTER ── */
+        footer { margin-top:40px; padding-top:20px; border-top:1px solid rgba(255,255,255,.1); }
+        .footer-content { text-align:center; color:#8892b0; }
+        .footer-content p { margin-bottom:15px; }
+        .brand-signature { display:flex; justify-content:center; align-items:center; }
+        .ag-brand { font-size:1.5rem; font-weight:700; background:linear-gradient(45deg,#c41c1c,#ee5a24,#ffa726,#42a5f5,#ab47bc); background-size:300% 300%; -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; animation:gradient-shift 3s ease-in-out infinite; letter-spacing:2px; text-transform:uppercase; }
+        @keyframes gradient-shift { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+
+        input[type="file"] { display:none; }
+
+        @media(max-width:768px){
+            .header{padding:40px 0 28px;}
+            .add-section{padding:24px 20px;}
+            .stats-bar{flex-direction:row;gap:4px;}
+            .stat-pill{padding:10px 16px;}
+            .stat-num{font-size:1.1rem;}
+            .modal{padding:24px 20px;}
+            .bookmarks-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;}
         }
     </style>
 </head>
 
 <body>
-
-    <!-- Aurora background -->
-    <div class="aurora">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
-        <div class="orb orb-4"></div>
-    </div>
+    <div class="aurora"></div>
 
     <div class="container">
 
-        <!-- ── HEADER ── -->
+        <!-- HEADER -->
         <header class="header">
             <div class="logo-badge">
                 <div class="logo-icon">🔖</div>
@@ -1131,63 +284,60 @@
             <p class="subtitle">Beautifully organize every corner of the web</p>
         </header>
 
-        <!-- ── STATS ── -->
+        <!-- STATS -->
         <div class="stats-bar">
-            <div class="stat-pill">
-                <div>
-                    <div class="stat-num" id="totalBookmarks">0</div>
-                    <div class="stat-lbl">Bookmarks</div>
-                </div>
-            </div>
-            <div class="stat-pill">
-                <div>
-                    <div class="stat-num" id="categoriesCount">0</div>
-                    <div class="stat-lbl">Categories</div>
-                </div>
-            </div>
-            <div class="stat-pill">
-                <div>
-                    <div class="stat-num" id="visitedToday">0</div>
-                    <div class="stat-lbl">Visited Today</div>
-                </div>
-            </div>
+            <div class="stat-pill"><div><div class="stat-num" id="totalBookmarks">0</div><div class="stat-lbl">Bookmarks</div></div></div>
+            <div class="stat-pill"><div><div class="stat-num" id="categoriesCount">0</div><div class="stat-lbl">Categories</div></div></div>
+            <div class="stat-pill"><div><div class="stat-num" id="visitedToday">0</div><div class="stat-lbl">Visited Today</div></div></div>
         </div>
 
-        <!-- ── SEARCH & FILTER ── -->
+        <!-- SEARCH & FILTER -->
         <div class="search-section">
             <div class="search-wrap">
                 <span class="search-icon">🔍</span>
-                <input type="text" id="searchInput" class="search-input" placeholder="Search bookmarks, categories…"
-                    oninput="filterBookmarks()">
+                <input type="text" id="searchInput" class="search-input"
+                       placeholder="Search bookmarks, categories…" oninput="filterBookmarks()">
             </div>
             <div class="category-filter" id="categoryFilter">
-                <button class="cat-btn active" onclick="filterByCategory('all', this)">All</button>
+                <button class="cat-btn active" data-cat="all" onclick="filterByCategory('all',this)">All</button>
             </div>
         </div>
 
-        <!-- ── BOOKMARKS GRID ── -->
-        <div class="bookmarks-grid" id="bookmarksGrid">
-            <!-- populated by JS -->
+        
+        <!-- GRID -->
+        <div class="bookmarks-grid" id="bookmarksGrid"></div>
+        
+        <!-- DRAG HINT -->
+        <div class="drag-hint" id="dragHint">
+            <span class="drag-hint-icon">⠿</span>
+            Drag cards to reorder your bookmarks
         </div>
-
-        <!-- ── ADD BOOKMARK ── -->
+        
+        <!-- ADD BOOKMARK -->
         <div class="add-section">
-            <div class="section-title">
-                <span class="dot"></span>
-                Add New Bookmark
-            </div>
+            <div class="section-title"><span class="dot"></span>Add New Bookmark</div>
 
             <div class="icon-selector-row">
                 <div class="selected-icon-display" id="selectedIconDisplay" onclick="openIconPicker()">🌐</div>
                 <button class="icon-pick-btn" onclick="openIconPicker()">Choose Icon</button>
-                <span class="icon-hint">Click to pick a custom icon</span>
+                <div class="favicon-auto-badge" id="faviconBadge">
+                    <span class="favicon-dot"></span>Auto favicon fetched
+                </div>
+                <span class="icon-hint" id="iconHint">Auto-fetches favicon from URL</span>
             </div>
 
             <div class="input-grid">
-                <input type="text" id="bookmarkTitle" class="input-field" placeholder="Bookmark Title" required>
-                <input type="url" id="bookmarkUrl" class="input-field" placeholder="https://example.com" required>
+                <input type="text" id="bookmarkTitle"    class="input-field" placeholder="Bookmark Title" required>
+                <div class="url-wrap">
+                    <input type="url" id="bookmarkUrl" class="input-field"
+                           placeholder="https://example.com" required
+                           oninput="handleUrlInput(this.value)">
+                    <div class="favicon-inline-preview" id="faviconInlinePreview">
+                        <img id="faviconInlineImg" src="" alt="">
+                    </div>
+                </div>
                 <input type="text" id="bookmarkCategory" class="input-field" placeholder="Category (optional)">
-                <input type="url" id="bookmarkImage" class="input-field" placeholder="Image URL (optional)">
+                <input type="url"  id="bookmarkImage"    class="input-field" placeholder="Image URL (optional)">
             </div>
 
             <div class="btn-row">
@@ -1195,321 +345,470 @@
             </div>
         </div>
 
-        <!-- ── EXPORT / IMPORT ── -->
+        <!-- EXPORT / IMPORT -->
         <div class="action-row">
             <button class="btn-secondary" onclick="exportBookmarks()">⬆ Export</button>
             <input type="file" id="importBookmarksFile" accept="application/json" onchange="importBookmarks(event)">
-            <button class="btn-secondary" onclick="document.getElementById('importBookmarksFile').click()">⬇
-                Import</button>
+            <button class="btn-secondary" onclick="document.getElementById('importBookmarksFile').click()">⬇ Import</button>
         </div>
 
-    </div><!-- /container -->
+    </div>
 
-    <!-- ── ICON PICKER MODAL ── -->
+    <!-- ICON MODAL -->
     <div class="modal-overlay" id="iconModal" onclick="handleModalClick(event)">
         <div class="modal">
             <div class="modal-header">
                 <h3 class="modal-title">Choose an Icon</h3>
                 <button class="close-btn" onclick="closeIconPicker()">×</button>
             </div>
-            <div class="icon-tabs" id="iconTabs">
-                <button class="icon-tab active" data-cat="general"
-                    onclick="showIconCategory('general', this)">General</button>
-                <button class="icon-tab" data-cat="social" onclick="showIconCategory('social', this)">Social</button>
-                <button class="icon-tab" data-cat="tech" onclick="showIconCategory('tech', this)">Tech</button>
-                <button class="icon-tab" data-cat="business"
-                    onclick="showIconCategory('business', this)">Business</button>
-                <button class="icon-tab" data-cat="entertainment"
-                    onclick="showIconCategory('entertainment', this)">Entertainment</button>
-                <button class="icon-tab" data-cat="education"
-                    onclick="showIconCategory('education', this)">Education</button>
+            <div class="icon-tabs">
+                <button class="icon-tab active" data-cat="general"       onclick="showIconCategory('general',this)">General</button>
+                <button class="icon-tab"        data-cat="social"        onclick="showIconCategory('social',this)">Social</button>
+                <button class="icon-tab"        data-cat="tech"          onclick="showIconCategory('tech',this)">Tech</button>
+                <button class="icon-tab"        data-cat="business"      onclick="showIconCategory('business',this)">Business</button>
+                <button class="icon-tab"        data-cat="entertainment" onclick="showIconCategory('entertainment',this)">Entertainment</button>
+                <button class="icon-tab"        data-cat="education"     onclick="showIconCategory('education',this)">Education</button>
             </div>
             <div class="icons-grid" id="iconsGrid"></div>
             <div class="upload-zone">
                 <p>Upload your own icon (PNG, JPG, SVG, GIF)</p>
                 <input type="file" id="customIconFile" accept="image/*" onchange="handleCustomIconUpload(event)">
-                <button class="btn-secondary" onclick="document.getElementById('customIconFile').click()">Browse
-                    File</button>
+                <button class="btn-secondary" onclick="document.getElementById('customIconFile').click()">Browse File</button>
             </div>
         </div>
     </div>
 
-    <!-- ── TOAST ── -->
+    <!-- TOAST -->
     <div class="toast" id="toast">
         <span class="toast-icon" id="toastIcon">✅</span>
         <span id="toastMsg">Done!</span>
     </div>
+
     <footer>
         <div class="footer-content">
             <p>© 2026 AG Bookmarks. Built with ❤️ for productivity.</p>
             <div class="brand-signature">
-                <span>🔥 </span>
-                <span class="ag-brand"> AG CREATIONS </span>
-                <span> 🔥</span>
+                <span>🔥 </span><span class="ag-brand"> AG CREATIONS </span><span> 🔥</span>
             </div>
         </div>
     </footer>
-    <!-- ══════════════════════════════════════ SCRIPTS ══════════════════════════════════════ -->
+
     <script>
-        /* ─── DATA ─── */
-        let bookmarks = [
-            { id: 1, title: "YouTube", url: "https://youtube.com", category: "social", icon: "📺", customIcon: false, image: "" },
-            { id: 2, title: "GitHub", url: "https://github.com", category: "development", icon: "🐱", customIcon: false, image: "" },
-            { id: 3, title: "Twitter", url: "https://twitter.com", category: "social", icon: "🐦", customIcon: false, image: "" },
-            { id: 4, title: "Udemy", url: "https://udemy.com", category: "learning", icon: "📚", customIcon: false, image: "" }
-        ];
+    /* ══════════════════════════════════════════════
+       DATA
+    ══════════════════════════════════════════════ */
+    let bookmarks = [
+        { id:1, title:"YouTube", url:"https://youtube.com",  category:"social",      icon:"📺", customIcon:false, image:"", faviconUrl:"" },
+        { id:2, title:"GitHub",  url:"https://github.com",   category:"development", icon:"🐱", customIcon:false, image:"", faviconUrl:"" },
+        { id:3, title:"Twitter", url:"https://twitter.com",  category:"social",      icon:"🐦", customIcon:false, image:"", faviconUrl:"" },
+        { id:4, title:"Udemy",   url:"https://udemy.com",    category:"learning",    icon:"📚", customIcon:false, image:"", faviconUrl:"" }
+    ];
 
-        const iconCategories = {
-            general: ['🌐', '📱', '💻', '🎯', '🔥', '⭐', '🚀', '💡', '🎨', '📊', '🏠', '🔗', '📎', '🗂️', '📁', '💾', '🗃️', '📋'],
-            social: ['📺', '📸', '💬', '📞', '✉️', '📧', '🐦', '👥', '💭', '🗨️', '💌', '📱', '📢', '🔊', '📻', '📡'],
-            tech: ['💻', '🖥️', '⌨️', '🖱️', '💾', '🔌', '🔋', '📟', '📠', '📺', '📡', '🛰️', '⚙️', '🔧', '🔨', '🛠️', '🐱', '⚡'],
-            business: ['💼', '📊', '📈', '📉', '💰', '💳', '💴', '💵', '🏦', '🏢', '📋', '📝', '📑', '🗂️', '📁', '💻', '📞', '✉️'],
-            entertainment: ['🎮', '🎵', '🎶', '🎤', '🎧', '📽️', '🎬', '📺', '🎭', '🎨', '🎯', '🎲', '♠️', '♥️', '♦️', '♣️', '🎪', '🎨'],
-            education: ['📚', '📖', '📝', '✏️', '🖊️', '📐', '📏', '🧮', '🎓', '🏫', '📊', '🔬', '🧪', '🌍', '🗺️', '📍', '🎯', '💡']
+    const iconCategories = {
+        general:       ['🌐','📱','💻','🎯','🔥','⭐','🚀','💡','🎨','📊','🏠','🔗','📎','🗂️','📁','💾','🗃️','📋'],
+        social:        ['📺','📸','💬','📞','✉️','📧','🐦','👥','💭','🗨️','💌','📱','📢','🔊','📻','📡'],
+        tech:          ['💻','🖥️','⌨️','🖱️','💾','🔌','🔋','📟','📠','📺','📡','🛰️','⚙️','🔧','🔨','🛠️','🐱','⚡'],
+        business:      ['💼','📊','📈','📉','💰','💳','💴','💵','🏦','🏢','📋','📝','📑','🗂️','📁','💻','📞','✉️'],
+        entertainment: ['🎮','🎵','🎶','🎤','🎧','📽️','🎬','📺','🎭','🎨','🎯','🎲','♠️','♥️','♦️','♣️','🎪','🎨'],
+        education:     ['📚','📖','📝','✏️','🖊️','📐','📏','🧮','🎓','🏫','📊','🔬','🧪','🌍','🗺️','📍','🎯','💡']
+    };
+
+    let selectedIcon   = '🌐';
+    let faviconIconUrl = '';
+    let userPickedIcon = false;
+    let visitedToday   = 0;
+    let customIcons    = {};
+    let activeCategory = 'all';
+
+    /* ══════════════════════════════════════════════
+       AUTO FAVICON FETCHER
+    ══════════════════════════════════════════════ */
+    let faviconTimer = null;
+
+    function getFaviconUrl(url) {
+        try {
+            const host = new URL(url).hostname;
+            return `https://www.google.com/s2/favicons?domain=${host}&sz=64`;
+        } catch { return ''; }
+    }
+
+    function handleUrlInput(value) {
+        clearTimeout(faviconTimer);
+        const preview  = document.getElementById('faviconInlinePreview');
+        const prevImg  = document.getElementById('faviconInlineImg');
+        const badge    = document.getElementById('faviconBadge');
+        const hint     = document.getElementById('iconHint');
+        const disp     = document.getElementById('selectedIconDisplay');
+
+        if (!value || !value.startsWith('http')) {
+            preview.classList.remove('show');
+            badge.classList.remove('show');
+            hint.style.display = '';
+            if (!userPickedIcon) {
+                faviconIconUrl = '';
+                disp.textContent = '🌐';
+                disp.classList.remove('has-favicon');
+            }
+            return;
+        }
+
+        faviconTimer = setTimeout(() => {
+            const favUrl = getFaviconUrl(value);
+            if (!favUrl) return;
+
+            const img = new Image();
+            img.onload = () => {
+                faviconIconUrl = favUrl;
+
+                // Show inline preview inside URL input
+                prevImg.src = favUrl;
+                preview.classList.add('show');
+
+                // Apply to icon selector if user hasn't manually picked one
+                if (!userPickedIcon) {
+                    disp.innerHTML = `<img src="${favUrl}" style="width:100%;height:100%;object-fit:contain;border-radius:10px">`;
+                    disp.classList.add('has-favicon');
+                    selectedIcon = favUrl;
+                }
+
+                badge.classList.add('show');
+                hint.style.display = 'none';
+            };
+            img.onerror = () => {
+                preview.classList.remove('show');
+                badge.classList.remove('show');
+                hint.style.display = '';
+            };
+            img.src = favUrl;
+        }, 600);
+    }
+
+    /* Silently fetch favicons for existing bookmarks that don't have one */
+    function backfillFavicons() {
+        bookmarks.forEach(bm => {
+            if (!bm.faviconUrl && bm.url) {
+                const favUrl = getFaviconUrl(bm.url);
+                if (!favUrl) return;
+                const img = new Image();
+                img.onload = () => {
+                    bm.faviconUrl = favUrl;
+                    saveBookmarks();
+                    // Update just the badge element already in DOM
+                    const badge = document.querySelector(`[data-bmid="${bm.id}"] .favicon-badge`);
+                    if (badge) {
+                        badge.querySelector('img').src = favUrl;
+                        badge.classList.add('show');
+                    }
+                };
+                img.src = favUrl;
+            }
+        });
+    }
+
+    /* ══════════════════════════════════════════════
+       PERSISTENCE
+    ══════════════════════════════════════════════ */
+    function saveBookmarks() {
+        localStorage.setItem('agBookmarks_v3', JSON.stringify(bookmarks));
+        localStorage.setItem('agCustomIcons',  JSON.stringify(customIcons));
+        localStorage.setItem('agVisited',      visitedToday.toString());
+    }
+
+    function loadBookmarks() {
+        const s  = localStorage.getItem('agBookmarks_v3');
+        const ci = localStorage.getItem('agCustomIcons');
+        const v  = localStorage.getItem('agVisited');
+        if (s)  bookmarks    = JSON.parse(s);
+        if (ci) customIcons  = JSON.parse(ci);
+        if (v)  visitedToday = parseInt(v);
+        renderBookmarks();
+        updateStats();
+        updateCategoryFilter();
+        if (bookmarks.length > 1) document.getElementById('dragHint').classList.add('visible');
+        setTimeout(backfillFavicons, 800);
+    }
+
+    /* ══════════════════════════════════════════════
+       RENDER
+    ══════════════════════════════════════════════ */
+    function renderBookmarks(list = bookmarks) {
+        const grid = document.getElementById('bookmarksGrid');
+        grid.innerHTML = '';
+
+        if (!list.length) {
+            grid.innerHTML = `<div class="empty-state"><div class="empty-icon">🔖</div><p>No bookmarks found.<br>Add one above!</p></div>`;
+            document.getElementById('dragHint').classList.remove('visible');
+            return;
+        }
+
+        if (bookmarks.length > 1) document.getElementById('dragHint').classList.add('visible');
+
+        list.forEach((bm, i) => {
+            const card = document.createElement('div');
+            card.className = 'bookmark-card';
+            card.style.animationDelay = `${i * 0.05}s`;
+            card.dataset.bmid = bm.id;
+            card.setAttribute('draggable', 'true');
+
+            /* Icon */
+            let innerHtml;
+            if (bm.image) {
+                innerHtml = `<img src="${esc(bm.image)}" alt="${esc(bm.title)}" onerror="this.style.display='none'">`;
+            } else if (bm.customIcon || (bm.icon && bm.icon.startsWith('data:'))) {
+                innerHtml = `<img src="${bm.icon}" alt="${esc(bm.title)}" style="width:100%;height:100%;object-fit:cover;border-radius:16px">`;
+            } else if (bm.icon && bm.icon.startsWith('http')) {
+                innerHtml = `<img src="${bm.icon}" alt="${esc(bm.title)}" style="width:100%;height:100%;object-fit:contain;border-radius:10px">`;
+            } else {
+                innerHtml = bm.icon || '🌐';
+            }
+
+            /* Favicon badge — only show if icon is NOT already a favicon url */
+            const showBadge  = bm.faviconUrl && !(bm.icon && bm.icon.startsWith('http'));
+            const badgeStyle = showBadge ? '' : 'style="display:none"';
+
+            card.innerHTML = `
+                <div class="drag-handle" title="Drag to reorder">⠿</div>
+                <button class="delete-btn" onclick="event.stopPropagation();deleteBookmark(${bm.id})" title="Delete">×</button>
+                <div class="bookmark-icon-wrap">
+                    <div class="icon-inner">${innerHtml}</div>
+                    <div class="favicon-badge ${showBadge?'show':''}" ${badgeStyle}>
+                        <img src="${bm.faviconUrl||''}" alt="">
+                    </div>
+                </div>
+                <div class="bookmark-title">${esc(bm.title)}</div>
+                <span class="bookmark-cat-tag">${esc(bm.category)}</span>
+            `;
+
+            card.addEventListener('click', () => openBookmark(bm.url));
+            attachDrag(card);
+            grid.appendChild(card);
+        });
+    }
+
+    function esc(s) {
+        return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    /* ══════════════════════════════════════════════
+       DRAG & DROP
+    ══════════════════════════════════════════════ */
+    let dragSrcId  = null;
+
+    function attachDrag(card) {
+        card.addEventListener('dragstart', function(e) {
+            dragSrcId = parseInt(this.dataset.bmid);
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', dragSrcId);
+        });
+
+        card.addEventListener('dragend', function() {
+            this.classList.remove('dragging');
+            document.querySelectorAll('.bookmark-card').forEach(c => c.classList.remove('drag-over'));
+            dragSrcId = null;
+        });
+
+        card.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+        });
+
+        card.addEventListener('dragenter', function() {
+            if (parseInt(this.dataset.bmid) === dragSrcId) return;
+            document.querySelectorAll('.bookmark-card').forEach(c => c.classList.remove('drag-over'));
+            this.classList.add('drag-over');
+        });
+
+        card.addEventListener('dragleave', function() {
+            this.classList.remove('drag-over');
+        });
+
+        card.addEventListener('drop', function(e) {
+            e.preventDefault(); e.stopPropagation();
+            const targetId = parseInt(this.dataset.bmid);
+            if (!dragSrcId || dragSrcId === targetId) return;
+
+            const srcIdx = bookmarks.findIndex(b => b.id === dragSrcId);
+            const tgtIdx = bookmarks.findIndex(b => b.id === targetId);
+            if (srcIdx === -1 || tgtIdx === -1) return;
+
+            const [moved] = bookmarks.splice(srcIdx, 1);
+            bookmarks.splice(tgtIdx, 0, moved);
+
+            saveBookmarks();
+            renderBookmarks(getFilteredList());
+            toast('↕️', 'Order saved!');
+        });
+    }
+
+    /* ══════════════════════════════════════════════
+       ACTIONS
+    ══════════════════════════════════════════════ */
+    function addBookmark() {
+        const title    = document.getElementById('bookmarkTitle').value.trim();
+        const url      = document.getElementById('bookmarkUrl').value.trim();
+        const category = (document.getElementById('bookmarkCategory').value.trim() || 'general').toLowerCase();
+        const image    = document.getElementById('bookmarkImage').value.trim();
+
+        if (!title || !url) { toast('⚠️','Please fill in Title and URL'); return; }
+
+        const isCustom = selectedIcon.startsWith('data:');
+        // If no favicon yet, try to get one now
+        const finalFav = faviconIconUrl || getFaviconUrl(url);
+
+        bookmarks.push({ id:Date.now(), title, url, category, image, icon:selectedIcon, customIcon:isCustom, faviconUrl:finalFav });
+        saveBookmarks();
+        renderBookmarks(getFilteredList());
+        updateStats();
+        updateCategoryFilter();
+        if (bookmarks.length > 1) document.getElementById('dragHint').classList.add('visible');
+
+        // Reset form
+        ['bookmarkTitle','bookmarkUrl','bookmarkCategory','bookmarkImage'].forEach(id => document.getElementById(id).value = '');
+        selectedIcon = '🌐'; faviconIconUrl = ''; userPickedIcon = false;
+        const disp = document.getElementById('selectedIconDisplay');
+        disp.textContent = '🌐'; disp.classList.remove('has-favicon');
+        document.getElementById('faviconInlinePreview').classList.remove('show');
+        document.getElementById('faviconBadge').classList.remove('show');
+        document.getElementById('iconHint').style.display = '';
+
+        toast('✅', `"${title}" added!`);
+    }
+
+    function deleteBookmark(id) {
+        const bm = bookmarks.find(b => b.id === id);
+        if (!confirm(`Delete "${bm?.title}"?`)) return;
+        bookmarks = bookmarks.filter(b => b.id !== id);
+        saveBookmarks();
+        renderBookmarks(getFilteredList());
+        updateStats();
+        toast('🗑️','Bookmark removed');
+    }
+
+    function openBookmark(url) {
+        visitedToday++; saveBookmarks(); updateStats();
+        window.open(url,'_blank');
+    }
+
+    /* ══════════════════════════════════════════════
+       FILTER & STATS
+    ══════════════════════════════════════════════ */
+    function getFilteredList() {
+        const term = document.getElementById('searchInput').value.toLowerCase();
+        return bookmarks.filter(bm => {
+            const matchCat  = activeCategory === 'all' || bm.category === activeCategory;
+            const matchTerm = !term || bm.title.toLowerCase().includes(term) || bm.url.toLowerCase().includes(term) || bm.category.toLowerCase().includes(term);
+            return matchCat && matchTerm;
+        });
+    }
+    function filterBookmarks() { renderBookmarks(getFilteredList()); }
+    function filterByCategory(cat, btn) {
+        activeCategory = cat;
+        document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+        renderBookmarks(getFilteredList());
+    }
+    function updateStats() {
+        document.getElementById('totalBookmarks').textContent  = bookmarks.length;
+        document.getElementById('categoriesCount').textContent = [...new Set(bookmarks.map(b=>b.category))].length;
+        document.getElementById('visitedToday').textContent    = visitedToday;
+    }
+    function updateCategoryFilter() {
+        const filter   = document.getElementById('categoryFilter');
+        const existing = Array.from(filter.querySelectorAll('.cat-btn')).map(b => b.dataset.cat);
+        [...new Set(bookmarks.map(b=>b.category))].forEach(cat => {
+            if (!existing.includes(cat)) {
+                const btn = document.createElement('button');
+                btn.className = 'cat-btn'; btn.dataset.cat = cat;
+                btn.textContent = cat.charAt(0).toUpperCase()+cat.slice(1);
+                btn.onclick = () => filterByCategory(cat, btn);
+                filter.appendChild(btn);
+            }
+        });
+    }
+
+    /* ══════════════════════════════════════════════
+       ICON PICKER
+    ══════════════════════════════════════════════ */
+    function openIconPicker() { document.getElementById('iconModal').classList.add('open'); showIconCategory('general', document.querySelector('.icon-tab[data-cat="general"]')); }
+    function closeIconPicker() { document.getElementById('iconModal').classList.remove('open'); }
+    function handleModalClick(e) { if (e.target===document.getElementById('iconModal')) closeIconPicker(); }
+
+    function showIconCategory(cat, btn) {
+        if (btn) { document.querySelectorAll('.icon-tab').forEach(t=>t.classList.remove('active')); btn.classList.add('active'); }
+        const grid = document.getElementById('iconsGrid');
+        grid.innerHTML = '';
+        (iconCategories[cat]||[]).forEach(icon => {
+            const el = document.createElement('div');
+            el.className = 'icon-opt'+(icon===selectedIcon?' selected':'');
+            el.textContent = icon;
+            el.onclick = () => selectIcon(icon, false, el);
+            grid.appendChild(el);
+        });
+    }
+
+    function selectIcon(icon, isCustom, el) {
+        selectedIcon = icon; userPickedIcon = true;
+        const disp = document.getElementById('selectedIconDisplay');
+        disp.innerHTML = isCustom ? `<img src="${icon}" style="width:100%;height:100%;object-fit:cover;border-radius:14px">` : icon;
+        disp.classList.remove('has-favicon');
+        document.querySelectorAll('.icon-opt').forEach(o=>o.classList.remove('selected'));
+        if (el) el.classList.add('selected');
+        if (!isCustom) closeIconPicker();
+    }
+
+    function handleCustomIconUpload(e) {
+        const file = e.target.files[0]; if (!file) return;
+        const reader = new FileReader();
+        reader.onload = ev => {
+            const data = ev.target.result;
+            customIcons['c_'+Date.now()] = data;
+            selectIcon(data, true, null);
+            closeIconPicker();
+            toast('🖼️','Custom icon applied!');
         };
+        reader.readAsDataURL(file);
+    }
 
-        let selectedIcon = '🌐';
-        let visitedToday = 0;
-        let customIcons = {};
-        let activeCategory = 'all';
+    /* ══════════════════════════════════════════════
+       EXPORT / IMPORT
+    ══════════════════════════════════════════════ */
+    function exportBookmarks() {
+        const data = JSON.stringify({bookmarks,customIcons,visitedToday},null,2);
+        const a = Object.assign(document.createElement('a'),{href:URL.createObjectURL(new Blob([data],{type:'application/json'})),download:'ag_bookmarks.json'});
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        toast('⬆️','Bookmarks exported!');
+    }
+    function importBookmarks(e) {
+        const file = e.target.files[0]; if (!file) return;
+        const reader = new FileReader();
+        reader.onload = ev => {
+            try {
+                const data = JSON.parse(ev.target.result);
+                if (data.bookmarks && Array.isArray(data.bookmarks)) bookmarks = data.bookmarks;
+                if (data.customIcons) customIcons = data.customIcons;
+                if (typeof data.visitedToday==='number') visitedToday = data.visitedToday;
+                saveBookmarks(); loadBookmarks();
+                toast('⬇️','Bookmarks imported!');
+            } catch { toast('❌','Invalid file format'); }
+        };
+        reader.readAsText(file);
+    }
 
-        /* ─── PERSISTENCE ─── */
-        function saveBookmarks() {
-            localStorage.setItem('agBookmarks_v2', JSON.stringify(bookmarks));
-            localStorage.setItem('agCustomIcons', JSON.stringify(customIcons));
-            localStorage.setItem('agVisited', visitedToday.toString());
-        }
+    /* ══════════════════════════════════════════════
+       TOAST
+    ══════════════════════════════════════════════ */
+    let toastTimer;
+    function toast(icon, msg) {
+        clearTimeout(toastTimer);
+        document.getElementById('toastIcon').textContent = icon;
+        document.getElementById('toastMsg').textContent  = msg;
+        const t = document.getElementById('toast');
+        t.classList.add('show');
+        toastTimer = setTimeout(()=>t.classList.remove('show'), 2800);
+    }
 
-        function loadBookmarks() {
-            const saved = localStorage.getItem('agBookmarks_v2');
-            const savedCI = localStorage.getItem('agCustomIcons');
-            const savedV = localStorage.getItem('agVisited');
-            if (saved) bookmarks = JSON.parse(saved);
-            if (savedCI) customIcons = JSON.parse(savedCI);
-            if (savedV) visitedToday = parseInt(savedV);
-            renderBookmarks();
-            updateStats();
-            updateCategoryFilter();
-        }
-
-        /* ─── RENDER ─── */
-        function renderBookmarks(list = bookmarks) {
-            const grid = document.getElementById('bookmarksGrid');
-            grid.innerHTML = '';
-
-            if (!list.length) {
-                grid.innerHTML = `<div class="empty-state">
-            <div class="empty-icon">🔖</div>
-            <p>No bookmarks found.<br>Add one above!</p>
-        </div>`;
-                return;
-            }
-
-            list.forEach((bm, i) => {
-                const card = document.createElement('div');
-                card.className = 'bookmark-card';
-                card.style.animationDelay = `${i * 0.05}s`;
-                card.onclick = () => openBookmark(bm.url);
-
-                let iconHtml;
-                if (bm.image) {
-                    iconHtml = `<img src="${bm.image}" alt="${bm.title}"
-                onerror="this.style.display='none'; this.parentElement.innerHTML='${bm.icon}'">`;
-                } else if (bm.customIcon) {
-                    iconHtml = `<img src="${bm.icon}" alt="${bm.title}" style="width:100%;height:100%;object-fit:cover;border-radius:18px">`;
-                } else {
-                    iconHtml = bm.icon;
-                }
-
-                card.innerHTML = `
-            <button class="delete-btn" onclick="event.stopPropagation(); deleteBookmark(${bm.id})" title="Delete">×</button>
-            <div class="bookmark-icon-wrap">${iconHtml}</div>
-            <div class="bookmark-title">${escHtml(bm.title)}</div>
-            <span class="bookmark-cat-tag">${escHtml(bm.category)}</span>
-        `;
-                grid.appendChild(card);
-            });
-        }
-
-        function escHtml(str) {
-            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-        }
-
-        /* ─── ACTIONS ─── */
-        function addBookmark() {
-            const title = document.getElementById('bookmarkTitle').value.trim();
-            const url = document.getElementById('bookmarkUrl').value.trim();
-            const category = (document.getElementById('bookmarkCategory').value.trim() || 'general').toLowerCase();
-            const image = document.getElementById('bookmarkImage').value.trim();
-
-            if (!title || !url) { toast('⚠️', 'Please fill in Title and URL'); return; }
-
-            const isCustom = selectedIcon.startsWith('data:');
-            bookmarks.push({ id: Date.now(), title, url, category, image, icon: selectedIcon, customIcon: isCustom });
-            saveBookmarks();
-            renderBookmarks(getFilteredList());
-            updateStats();
-            updateCategoryFilter();
-
-            document.getElementById('bookmarkTitle').value = '';
-            document.getElementById('bookmarkUrl').value = '';
-            document.getElementById('bookmarkCategory').value = '';
-            document.getElementById('bookmarkImage').value = '';
-            selectedIcon = '🌐';
-            document.getElementById('selectedIconDisplay').textContent = '🌐';
-
-            toast('✅', `"${title}" added!`);
-        }
-
-        function deleteBookmark(id) {
-            const bm = bookmarks.find(b => b.id === id);
-            if (!confirm(`Delete "${bm?.title}"?`)) return;
-            bookmarks = bookmarks.filter(b => b.id !== id);
-            saveBookmarks();
-            renderBookmarks(getFilteredList());
-            updateStats();
-            toast('🗑️', 'Bookmark removed');
-        }
-
-        function openBookmark(url) {
-            visitedToday++;
-            saveBookmarks();
-            updateStats();
-            window.open(url, '_blank');
-        }
-
-        /* ─── FILTER ─── */
-        function getFilteredList() {
-            const term = document.getElementById('searchInput').value.toLowerCase();
-            return bookmarks.filter(bm => {
-                const matchCat = activeCategory === 'all' || bm.category === activeCategory;
-                const matchTerm = !term || bm.title.toLowerCase().includes(term) || bm.url.toLowerCase().includes(term) || bm.category.toLowerCase().includes(term);
-                return matchCat && matchTerm;
-            });
-        }
-
-        function filterBookmarks() { renderBookmarks(getFilteredList()); }
-        function filterByCategory(cat, btn) {
-            activeCategory = cat;
-            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-            if (btn) btn.classList.add('active');
-            renderBookmarks(getFilteredList());
-        }
-
-        /* ─── STATS ─── */
-        function updateStats() {
-            document.getElementById('totalBookmarks').textContent = bookmarks.length;
-            document.getElementById('categoriesCount').textContent = [...new Set(bookmarks.map(b => b.category))].length;
-            document.getElementById('visitedToday').textContent = visitedToday;
-        }
-
-        function updateCategoryFilter() {
-            const filter = document.getElementById('categoryFilter');
-            const existing = Array.from(filter.querySelectorAll('.cat-btn')).map(b => b.dataset.cat);
-            const cats = [...new Set(bookmarks.map(b => b.category))];
-            cats.forEach(cat => {
-                if (!existing.includes(cat)) {
-                    const btn = document.createElement('button');
-                    btn.className = 'cat-btn';
-                    btn.dataset.cat = cat;
-                    btn.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
-                    btn.onclick = () => filterByCategory(cat, btn);
-                    filter.appendChild(btn);
-                }
-            });
-        }
-
-        /* ─── ICON PICKER ─── */
-        function openIconPicker() {
-            document.getElementById('iconModal').classList.add('open');
-            showIconCategory('general', document.querySelector('.icon-tab[data-cat="general"]'));
-        }
-        function closeIconPicker() { document.getElementById('iconModal').classList.remove('open'); }
-        function handleModalClick(e) { if (e.target === document.getElementById('iconModal')) closeIconPicker(); }
-
-        function showIconCategory(cat, btn) {
-            if (btn) {
-                document.querySelectorAll('.icon-tab').forEach(t => t.classList.remove('active'));
-                btn.classList.add('active');
-            }
-            const grid = document.getElementById('iconsGrid');
-            grid.innerHTML = '';
-            (iconCategories[cat] || []).forEach(icon => {
-                const el = document.createElement('div');
-                el.className = 'icon-opt' + (icon === selectedIcon ? ' selected' : '');
-                el.textContent = icon;
-                el.onclick = () => selectIcon(icon, false, el);
-                grid.appendChild(el);
-            });
-        }
-
-        function selectIcon(icon, isCustom, el) {
-            selectedIcon = icon;
-            const disp = document.getElementById('selectedIconDisplay');
-            disp.innerHTML = isCustom
-                ? `<img src="${icon}" style="width:100%;height:100%;object-fit:cover;border-radius:14px">`
-                : icon;
-            document.querySelectorAll('.icon-opt').forEach(o => o.classList.remove('selected'));
-            if (el) el.classList.add('selected');
-            if (!isCustom) closeIconPicker();
-        }
-
-        function handleCustomIconUpload(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = ev => {
-                const data = ev.target.result;
-                customIcons['c_' + Date.now()] = data;
-                selectIcon(data, true, null);
-                closeIconPicker();
-                toast('🖼️', 'Custom icon applied!');
-            };
-            reader.readAsDataURL(file);
-        }
-
-        /* ─── EXPORT / IMPORT ─── */
-        function exportBookmarks() {
-            const data = JSON.stringify({ bookmarks, customIcons, visitedToday }, null, 2);
-            const a = Object.assign(document.createElement('a'), {
-                href: URL.createObjectURL(new Blob([data], { type: 'application/json' })),
-                download: 'ag_bookmarks.json'
-            });
-            document.body.appendChild(a); a.click(); document.body.removeChild(a);
-            toast('⬆️', 'Bookmarks exported!');
-        }
-
-        function importBookmarks(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = ev => {
-                try {
-                    const data = JSON.parse(ev.target.result);
-                    if (data.bookmarks && Array.isArray(data.bookmarks)) bookmarks = data.bookmarks;
-                    if (data.customIcons) customIcons = data.customIcons;
-                    if (typeof data.visitedToday === 'number') visitedToday = data.visitedToday;
-                    saveBookmarks(); loadBookmarks();
-                    toast('⬇️', 'Bookmarks imported!');
-                } catch { toast('❌', 'Invalid file format'); }
-            };
-            reader.readAsText(file);
-        }
-
-        /* ─── TOAST ─── */
-        let toastTimer;
-        function toast(icon, msg) {
-            clearTimeout(toastTimer);
-            document.getElementById('toastIcon').textContent = icon;
-            document.getElementById('toastMsg').textContent = msg;
-            const t = document.getElementById('toast');
-            t.classList.add('show');
-            toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
-        }
-
-        /* ─── INIT ─── */
-        document.addEventListener('DOMContentLoaded', loadBookmarks);
+    document.addEventListener('DOMContentLoaded', loadBookmarks);
     </script>
 </body>
-
 </html>
